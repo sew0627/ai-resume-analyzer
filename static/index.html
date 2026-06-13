@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar hidden">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h2>Resume<span>AI</span></h2>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-target="tab-overview">
+                    <i class="fa-solid fa-house"></i> Overview
+                </button>
+                <button class="nav-item" data-target="tab-structure">
+                    <i class="fa-solid fa-ruler-combined"></i> Structure & Format
+                </button>
+                <button class="nav-item" data-target="tab-experience">
+                    <i class="fa-solid fa-briefcase"></i> Experience & Education
+                </button>
+                <button class="nav-item" data-target="tab-skills">
+                    <i class="fa-solid fa-lightbulb"></i> Skills & Impact
+                </button>
+                <button class="nav-item" data-target="tab-job">
+                    <i class="fa-solid fa-bullseye"></i> Job Alignment
+                </button>
+                <div class="sidebar-divider"></div>
+                <button class="nav-item text-danger" id="analyze-another">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> Analyze Another
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main-content" id="main-content">
+            <!-- Header for initial state -->
+            <header id="initial-header" class="text-center">
+                <div class="logo center-logo">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h1>Resume<span>AI</span> Dashboard</h1>
+                </div>
+                <p class="subtitle">A minimalist, data-driven overview of your resume</p>
+            </header>
+
+            <!-- Upload Section -->
+            <div id="upload-section" class="card fade-in center-card upload-card">
+                <div class="job-role-group">
+                    <label for="job-role">Target Job Role (Optional)</label>
+                    <input type="text" id="job-role" class="minimal-input" placeholder="e.g., Data Scientist, React Developer">
+                </div>
+                
+                <div class="drop-zone" id="drop-zone">
+                    <i class="fa-solid fa-cloud-arrow-up icon"></i>
+                    <h2>Upload your Resume</h2>
+                    <p>Drag & drop your PDF file here, or click to browse</p>
+                    <input type="file" id="file-input" accept="application/pdf" hidden>
+                    <button class="btn primary-btn" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                    <p class="file-hint">Supported formats: .PDF (Max 5MB)</p>
+                </div>
+            </div>
+
+            <!-- Loading Section -->
+            <div id="loading-section" class="card hidden center-card">
+                <div class="loader-container">
+                    <div class="spinner"></div>
+                    <h3>Analyzing your Resume...</h3>
+                    <p>Our AI is reviewing 18 distinct criteria. This may take a moment.</p>
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="error-section" class="card error-card hidden center-card">
+                <div class="error-content">
+                    <i class="fa-solid fa-circle-exclamation error-icon"></i>
+                    <h3>Analysis Failed</h3>
+                    <p id="error-message">Something went wrong.</p>
+                    <button class="btn outline-btn" id="try-again-btn">Try Again</button>
+                </div>
+            </div>
+
+            <!-- Results Section (Dashboard Tabs) -->
+            <div id="results-section" class="hidden fade-in">
+                
+                <!-- Tab: Overview -->
+                <div id="tab-overview" class="tab-content active">
+                    <div class="dashboard-header">
+                        <h2>Analysis Overview</h2>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <!-- ROW 1 -->
+                        <!-- 1. Overall Score -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height flex-col">
+                                <h3 class="card-title">OVERALL SCORE</h3>
+                                <div class="score-container flex-center flex-grow">
+                                    <div class="score-circle">
+                                        <svg viewBox="0 0 100 100">
+                                            <circle class="bg" cx="50" cy="50" r="40"></circle>
+                                            <circle class="progress" id="score-progress" cx="50" cy="50" r="40"></circle>
+                                        </svg>
+                                        <div class="score-inner">
+                                            <span class="score-value" id="score-value">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="score-label" id="score-label"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 2. Performance Radar -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height">
+                                <h3 class="card-title">PERFORMANCE RADAR</h3>
+                                <div class="radar-container" style="position: relative; height:200px; width:100%; display: flex; justify-content: center;">
+                                    <canvas id="radarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Section Scores -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height flex-col">
+                                <h3 class="card-title">SECTION SCORES</h3>
+                                <div class="bar-chart-container" id="overview-section-scores">
+                                    <!-- Populated dynamically by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW 2 -->
+                        <!-- 1. Keyword Match (Small) -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height flex-col">
+                                <h3 class="card-title">KEYWORD MATCH</h3>
+                                <div class="keyword-chart-container">
+                                    <div class="donut-chart" style="width: 80px; height: 80px;">
+                                        <svg viewBox="0 0 36 36" class="circular-chart">
+                                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            <path class="circle missing-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            <path class="circle partial-path" id="kw-partial-path" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            <path class="circle matched-path" id="kw-matched-path" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        </svg>
+                                        <div class="donut-inner" style="font-size: 1rem;"><span id="kw-matched-text">0%</span></div>
+                                    </div>
+                                    <div class="keyword-legend">
+                                        <div class="legend-item"><span class="legend-dot dot-matched"></span><span>Matched</span><span class="legend-val" id="val-matched">0%</span></div>
+                                        <div class="legend-item"><span class="legend-dot dot-partial"></span><span>Partial</span><span class="legend-val" id="val-partial">0%</span></div>
+                                        <div class="legend-item"><span class="legend-dot dot-missing"></span><span>Missing</span><span class="legend-val" id="val-missing">0%</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Executive Summary -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height">
+                                <h3 class="card-title">EXECUTIVE SUMMARY</h3>
+                                <p id="overall-summary" class="text-sm line-height-lg" style="font-size: 0.85rem; overflow-y: auto; max-height: 200px;"></p>
+                            </div>
+                        </div>
+
+                        <!-- 3. Top Recommendations -->
+                        <div class="dashboard-col">
+                            <div class="card fill-height">
+                                <h3 class="card-title text-primary"><i class="fa-solid fa-lightbulb"></i> TOP RECOMMENDATIONS</h3>
+                                <ul id="general-recommendations" class="icon-list badge-list mt-3" style="font-size: 0.85rem; overflow-y: auto; max-height: 200px;">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-tabs containers -->
+                <div id="tab-structure" class="tab-content hidden">
+                    <div class="dashboard-header"><h2>Structure & Formatting</h2></div>
+                    <div id="content-structure"></div>
+                </div>
+
+                <div id="tab-experience" class="tab-content hidden">
+                    <div class="dashboard-header"><h2>Experience & Education</h2></div>
+                    <div id="content-experience"></div>
+                </div>
+
+                <div id="tab-skills" class="tab-content hidden">
+                    <div class="dashboard-header"><h2>Skills & Impact</h2></div>
+                    <div id="content-skills"></div>
+                </div>
+
+                <div id="tab-job" class="tab-content hidden">
+                    <div class="dashboard-header"><h2>Job Alignment</h2></div>
+                    <div id="content-job"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Template for Minimalist Tab Content -->
+    <template id="tab-content-template">
+        <div class="card minimalist-card">
+            <div class="tab-grid">
+                <!-- Left: Scores Chart -->
+                <div class="scores-column">
+                    <h3 class="card-title">SECTION SCORES</h3>
+                    <div class="bar-chart-container"></div>
+                </div>
+                <!-- Right: Aggregated Feedback -->
+                <div class="feedback-column">
+                    <h3 class="card-title text-success"><i class="fa-solid fa-check"></i> KEY STRENGTHS</h3>
+                    <ul class="strengths-list icon-list success-list"></ul>
+                    
+                    <h3 class="card-title text-danger mt-4"><i class="fa-solid fa-xmark"></i> AREAS TO IMPROVE</h3>
+                    <ul class="weaknesses-list icon-list danger-list"></ul>
+                </div>
+            </div>
+            <div class="recommendations-section mt-4 pt-4 border-top">
+                <h3 class="card-title text-primary"><i class="fa-solid fa-lightbulb"></i> TOP RECOMMENDATIONS</h3>
+                <ul class="recommendations-list icon-list badge-list"></ul>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
