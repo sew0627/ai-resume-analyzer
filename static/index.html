@@ -101,21 +101,28 @@
                     
                     <div class="dashboard-grid">
                         <!-- ROW 1 -->
-                        <!-- 1. Overall Score -->
-                        <div class="dashboard-col">
-                            <div class="card fill-height flex-col">
-                                <h3 class="card-title">OVERALL SCORE</h3>
-                                <div class="score-container flex-center flex-grow">
-                                    <div class="score-circle">
-                                        <svg viewBox="0 0 100 100">
-                                            <circle class="bg" cx="50" cy="50" r="40"></circle>
-                                            <circle class="progress" id="score-progress" cx="50" cy="50" r="40"></circle>
-                                        </svg>
-                                        <div class="score-inner">
-                                            <span class="score-value" id="score-value">0</span>
+                        <!-- 1. Overall Score & Executive Summary -->
+                        <div class="dashboard-col span-2">
+                            <div class="card fill-height" style="display: flex; gap: 2rem; align-items: center;">
+                                <div class="score-section" style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;">
+                                    <h3 class="card-title text-center" style="margin-bottom: 1.5rem;">🏆 OVERALL SCORE</h3>
+                                    <div class="score-container flex-center" style="padding: 0;">
+                                        <div class="score-circle" style="width: 160px; height: 160px;">
+                                            <svg viewBox="0 0 100 100">
+                                                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                                                <circle class="progress" id="score-progress" cx="50" cy="50" r="40"></circle>
+                                            </svg>
+                                            <div class="score-inner">
+                                                <span class="score-value" id="score-value" style="font-size: 3.5rem;">0</span>
+                                            </div>
                                         </div>
+                                        <div class="score-label" id="score-label" style="font-size: 1rem; margin-top: 1.5rem;"></div>
                                     </div>
-                                    <div class="score-label" id="score-label"></div>
+                                </div>
+                                
+                                <div class="summary-section" style="flex: 1; border-left: 1px solid var(--card-border); padding-left: 2rem; display: flex; flex-direction: column; justify-content: center; height: 100%;">
+                                    <h3 class="card-title">📝 EXECUTIVE SUMMARY</h3>
+                                    <p id="overall-summary" class="text-sm line-height-lg" style="font-size: 0.95rem;"></p>
                                 </div>
                             </div>
                         </div>
@@ -123,28 +130,28 @@
                         <!-- 2. Performance Radar -->
                         <div class="dashboard-col">
                             <div class="card fill-height">
-                                <h3 class="card-title">PERFORMANCE RADAR</h3>
+                                <h3 class="card-title">📊 PERFORMANCE RADAR</h3>
                                 <div class="radar-container" style="position: relative; height:200px; width:100%; display: flex; justify-content: center;">
                                     <canvas id="radarChart"></canvas>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Section Scores -->
+                        <!-- ROW 2 -->
+                        <!-- 1. Section Scores -->
                         <div class="dashboard-col">
                             <div class="card fill-height flex-col">
-                                <h3 class="card-title">SECTION SCORES</h3>
+                                <h3 class="card-title">📈 SECTION SCORES</h3>
                                 <div class="bar-chart-container" id="overview-section-scores">
                                     <!-- Populated dynamically by JS -->
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ROW 2 -->
-                        <!-- 1. Keyword Match (Small) -->
+                        <!-- 2. Keyword Match (Small) -->
                         <div class="dashboard-col">
                             <div class="card fill-height flex-col">
-                                <h3 class="card-title">KEYWORD MATCH</h3>
+                                <h3 class="card-title">🎯 KEYWORD MATCH</h3>
                                 <div class="keyword-chart-container">
                                     <div class="donut-chart" style="width: 80px; height: 80px;">
                                         <svg viewBox="0 0 36 36" class="circular-chart">
@@ -164,19 +171,11 @@
                             </div>
                         </div>
 
-                        <!-- 2. Executive Summary -->
-                        <div class="dashboard-col">
-                            <div class="card fill-height">
-                                <h3 class="card-title">EXECUTIVE SUMMARY</h3>
-                                <p id="overall-summary" class="text-sm line-height-lg" style="font-size: 0.85rem; overflow-y: auto; max-height: 200px;"></p>
-                            </div>
-                        </div>
-
                         <!-- 3. Top Recommendations -->
                         <div class="dashboard-col">
                             <div class="card fill-height">
-                                <h3 class="card-title text-primary"><i class="fa-solid fa-lightbulb"></i> TOP RECOMMENDATIONS</h3>
-                                <ul id="general-recommendations" class="icon-list badge-list mt-3" style="font-size: 0.85rem; overflow-y: auto; max-height: 200px;">
+                                <h3 class="card-title text-primary">💡 TOP RECOMMENDATIONS</h3>
+                                <ul id="general-recommendations" class="icon-list badge-list mt-3" style="font-size: 0.85rem;">
                                     <!-- Populated dynamically -->
                                 </ul>
                             </div>
@@ -186,22 +185,22 @@
 
                 <!-- Sub-tabs containers -->
                 <div id="tab-structure" class="tab-content hidden">
-                    <div class="dashboard-header"><h2>Structure & Formatting</h2></div>
+                    <div class="dashboard-header"><h2>📏 Structure & Formatting</h2></div>
                     <div id="content-structure"></div>
                 </div>
 
                 <div id="tab-experience" class="tab-content hidden">
-                    <div class="dashboard-header"><h2>Experience & Education</h2></div>
+                    <div class="dashboard-header"><h2>💼 Experience & Education</h2></div>
                     <div id="content-experience"></div>
                 </div>
 
                 <div id="tab-skills" class="tab-content hidden">
-                    <div class="dashboard-header"><h2>Skills & Impact</h2></div>
+                    <div class="dashboard-header"><h2>🚀 Skills & Impact</h2></div>
                     <div id="content-skills"></div>
                 </div>
 
                 <div id="tab-job" class="tab-content hidden">
-                    <div class="dashboard-header"><h2>Job Alignment</h2></div>
+                    <div class="dashboard-header"><h2>🎯 Job Alignment</h2></div>
                     <div id="content-job"></div>
                 </div>
 
@@ -215,20 +214,20 @@
             <div class="tab-grid">
                 <!-- Left: Scores Chart -->
                 <div class="scores-column">
-                    <h3 class="card-title">SECTION SCORES</h3>
+                    <h3 class="card-title">📈 SECTION SCORES</h3>
                     <div class="bar-chart-container"></div>
                 </div>
                 <!-- Right: Aggregated Feedback -->
                 <div class="feedback-column">
-                    <h3 class="card-title text-success"><i class="fa-solid fa-check"></i> KEY STRENGTHS</h3>
+                    <h3 class="card-title text-success">✅ KEY STRENGTHS</h3>
                     <ul class="strengths-list icon-list success-list"></ul>
                     
-                    <h3 class="card-title text-danger mt-4"><i class="fa-solid fa-xmark"></i> AREAS TO IMPROVE</h3>
+                    <h3 class="card-title text-danger mt-4">⚠️ AREAS TO IMPROVE</h3>
                     <ul class="weaknesses-list icon-list danger-list"></ul>
                 </div>
             </div>
             <div class="recommendations-section mt-4 pt-4 border-top">
-                <h3 class="card-title text-primary"><i class="fa-solid fa-lightbulb"></i> TOP RECOMMENDATIONS</h3>
+                <h3 class="card-title text-primary">💡 TOP RECOMMENDATIONS</h3>
                 <ul class="recommendations-list icon-list badge-list"></ul>
             </div>
         </div>

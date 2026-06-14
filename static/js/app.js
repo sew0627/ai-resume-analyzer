@@ -120,9 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
         progress.style.strokeDashoffset = 251 - (score / 100) * 251;
         
         const label = document.getElementById('score-label');
-        if (score >= 80) { progress.style.stroke = 'var(--success)'; label.textContent = "EXCELLENT"; label.className = 'score-label text-success'; }
-        else if (score >= 60) { progress.style.stroke = 'var(--warning)'; label.textContent = "AVERAGE"; label.className = 'score-label text-warning'; }
-        else { progress.style.stroke = 'var(--danger)'; label.textContent = "NEEDS WORK"; label.className = 'score-label text-danger'; }
+        if (score >= 80) { progress.style.stroke = 'var(--success)'; label.textContent = "🌟 EXCELLENT"; label.className = 'score-label text-success'; }
+        else if (score >= 60) { progress.style.stroke = 'var(--warning)'; label.textContent = "👍 AVERAGE"; label.className = 'score-label text-warning'; }
+        else { progress.style.stroke = 'var(--danger)'; label.textContent = "⚠️ NEEDS WORK"; label.className = 'score-label text-danger'; }
 
         // Summary
         document.getElementById('overall-summary').textContent = data.overall_summary || "No summary provided.";
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (recs.length > 0) {
                 recs.forEach(r => {
                     const li = document.createElement('li');
-                    li.textContent = r;
+                    li.textContent = r.replace(/\*\*/g, '');
                     recList.appendChild(li);
                 });
             } else {
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const uniqueItems = [...new Set(items)];
             uniqueItems.forEach(item => {
                 const li = document.createElement('li');
-                li.textContent = item;
+                li.textContent = item.replace(/\*\*/g, '');
                 ul.appendChild(li);
             });
         } else {
